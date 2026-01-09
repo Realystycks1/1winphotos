@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
         --bg-dark: #0f192b;
@@ -53,7 +53,7 @@
         margin-bottom: 15px;
     }
     .id-label {
-        font-size: 12px; color: var(--blue-1win); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
+        font-size: 12px; color: var(--blue-1win); font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;
     }
     .id-input {
         width: 100%; padding: 14px;
@@ -82,36 +82,123 @@
         display: none; align-items: center; justify-content: center;
         backdrop-filter: blur(10px);
         animation: fadeIn 0.2s;
+        overflow-y: auto;
+        padding: 20px 0;
     }
     .modal-box {
         width: 90%; max-width: 340px;
         background: #1c283d;
         border: 2px solid var(--blue-1win);
         border-radius: 20px;
-        padding: 25px;
+        padding: 20px;
         text-align: center;
         box-shadow: 0 0 50px rgba(0, 153, 255, 0.3);
-        transform: scale(0.9);
         animation: popIn 0.2s forwards;
+        margin: auto;
     }
     .modal-title { font-size: 22px; font-weight: 900; color: white; margin-bottom: 10px; font-style: italic; }
-    .modal-desc { font-size: 14px; color: #ccc; margin-bottom: 25px; line-height: 1.5; font-weight: 500; }
+    .modal-desc { font-size: 14px; color: #ccc; margin-bottom: 25px; line-height: 1.5; font-weight: 600; }
     
-    /* СТИЛИ ДЛЯ СТАРТОВОГО ВАЖНОГО ОКНА */
     .warning-big {
         color: var(--pink-1win);
         font-size: 26px;
         font-weight: 900;
         text-transform: uppercase;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         line-height: 1.1;
         text-shadow: 0 0 20px rgba(245, 59, 123, 0.5);
     }
-    .warning-desc {
-        font-size: 15px;
+    
+    /* СТИЛИ СПОЙЛЕРА И ТЕКСТА ИНСТРУКЦИИ */
+    .spoiler-box {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    
+    /* Общий класс для текста инструкции (жирный и приятный) */
+    .instruction-text-style {
+        font-size: 12px;
+        color: #e0e6ed; /* Чуть светлее серого */
+        line-height: 1.6; /* Увеличенный интервал */
+        font-weight: 600; /* Жирнее обычного */
+    }
+    .instruction-text-style strong {
         color: white;
-        margin-bottom: 20px;
+        font-weight: 800;
+    }
+    
+    .spoiler-content {
+        max-height: 80px; 
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        position: relative;
+        text-align: center;
+    }
+    .spoiler-content p, .spoiler-content div {
+        text-align: left;
+    }
+    
+    /* Заголовок внутри инструкции */
+    .instruction-header {
+        color: var(--pink-1win);
+        font-weight: 900;
+        font-size: 15px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        display: block;
+        text-shadow: 0 0 10px rgba(245, 59, 123, 0.4);
+        border-bottom: 1px dashed rgba(245, 59, 123, 0.3);
+        padding-bottom: 10px;
+    }
+
+    .spoiler-content.expanded {
+        max-height: 1500px;
+    }
+    .spoiler-content::after {
+        content: '';
+        position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+        background: linear-gradient(to bottom, transparent, #161f30);
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+    .spoiler-content.expanded::after {
+        opacity: 0;
+    }
+    
+    /* КНОПКА РАЗВЕРНУТЬ - ЖИРНАЯ */
+    .spoiler-btn {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 2px solid rgba(255,255,255,0.1);
+        color: var(--blue-1win);
+        font-size: 13px;
+        font-weight: 900; 
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .spoiler-btn:hover { 
+        background: rgba(0, 153, 255, 0.1); 
+        border-color: var(--blue-1win);
+    }
+    
+    .warning-desc {
+        font-size: 13px;
+        color: white;
+        margin-bottom: 15px;
         line-height: 1.4;
+        font-weight: 600;
     }
     
     /* ГАЛОЧКА (CHECKBOX) */
@@ -122,31 +209,35 @@
         background: rgba(0,0,0,0.3);
         padding: 12px;
         border-radius: 12px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         border: 1px solid rgba(255,255,255,0.1);
         text-align: left;
     }
+    .checkbox-container.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
     .custom-checkbox {
-        width: 24px;
-        height: 24px;
-        min-width: 24px;
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
         accent-color: var(--blue-1win);
         cursor: pointer;
-        margin-top: 2px;
+        margin-top: 0px;
     }
     .checkbox-label {
         font-size: 12px;
         color: var(--text-white);
         font-weight: 700;
         cursor: pointer;
-        line-height: 1.3;
+        line-height: 1.4;
     }
 
     .modal-actions { display: flex; gap: 10px; }
     .modal-btn {
         flex: 1; padding: 14px; border-radius: 12px; border: none;
-        font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase;
-        transition: 0.3s;
+        font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase;
+        transition: 0.3s; letter-spacing: 0.5px;
     }
     .btn-cancel { background: #2c3e50; color: #fff; }
     .btn-confirm { background: linear-gradient(90deg, #f53b7b, #d6306d); color: white; box-shadow: 0 5px 15px rgba(245, 59, 123, 0.4); }
@@ -182,7 +273,7 @@
         opacity: 0.7;
     }
     .g-title {
-        font-weight: 700;
+        font-weight: 800;
         font-size: 11px;
         text-transform: uppercase;
         z-index: 2;
@@ -199,9 +290,9 @@
     
     .main-btn {
         background: linear-gradient(90deg, #0099ff, #0066cc); color: white; border: none;
-        width: 100%; padding: 16px; border-radius: 15px; font-weight: 800; font-size: 16px;
+        width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; font-size: 16px;
         text-transform: uppercase; margin-top: 10px; cursor: pointer;
-        box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4); transition: 0.2s;
+        box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4); transition: 0.2s; letter-spacing: 0.5px;
     }
     .main-btn:disabled { display: none; }
     .main-btn:active:not(:disabled) { transform: scale(0.98); opacity: 0.9; }
@@ -210,11 +301,11 @@
     .loader-container { display: none; justify-content: center; align-items: center; margin-top: 20px; height: 50px; }
     .spinner { width: 30px; height: 30px; border: 3px solid rgba(255, 255, 255, 0.1); border-left-color: var(--blue-1win); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    .status-text { text-align: center; font-size: 12px; color: var(--text-gray); margin-top: 15px; height: 20px; font-family: monospace; }
+    .status-text { text-align: center; font-size: 12px; color: var(--text-gray); margin-top: 15px; height: 20px; font-family: monospace; font-weight: 600; }
 
     /* MINES */
     .mines-options { display: flex; gap: 5px; margin-bottom: 15px; background: #0f192b; padding: 5px; border-radius: 12px; }
-    .mine-btn { flex: 1; background: transparent; border: none; color: var(--text-gray); padding: 8px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .mine-btn { flex: 1; background: transparent; border: none; color: var(--text-gray); padding: 8px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .mine-btn.active { background: var(--blue-1win); color: white; }
     .mines-wrapper { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; background: #0b1221; padding: 8px; border-radius: 15px; }
     .mine-cell { aspect-ratio: 1; background: #152033; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
@@ -336,8 +427,39 @@
 <div id="start-warning-modal" class="modal-overlay">
     <div class="modal-box" style="border-color: var(--pink-1win);">
         <div class="warning-big">⚠️ ВАЖНО!</div>
+        
+        <!-- ИНСТРУКЦИЯ СО СПОЙЛЕРОМ (ДЛЯ СТАРТА) -->
+        <div style="text-align: left; margin-bottom: 15px;">
+            <div class="spoiler-box">
+                <div id="spoiler-text" class="spoiler-content instruction-text-style">
+                    <span class="instruction-header">❗️ ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ ❗️</span>
+                    
+                    <p>Бот основан и обучен на кластере нейросети 🖥<br>
+                    Для тренировки бота было сыграно 🎰 10.000+ игр.<br>
+                    В данный момент пользователи бота успешно делают в день 15-25% от своего 💸 капитала!</p><br>
+                    <p>На текущий момент бот по сей день проходит проверки и исправления! Точность бота составляет 92%!</p><br>
+                    <div style="color:var(--blue-1win); font-weight: 800; margin-bottom: 5px;">Для получения максимального профита следуйте инструкции:</div>
+                    <p>🟢 <strong>1. Пройти регистрацию в букмекерской конторе 1WIN</strong><br>
+                    <span style="color:var(--pink-1win)">❗️ОБЯЗАТЕЛЬНО НУЖНО СОЗДАТЬ НОВЫЙ АККАУНТ❗️</span><br>
+                    (Единственная официальная ссылка на сайт 1WIN будет постится в телеграмм канале @temki1win)<br>
+                    Если не открывается - заходим с включенным VPN (Швеция).<br>
+                    Без регистрации доступ к сигналам не будет открыт!<br>
+                    <span style="color:var(--pink-1win)">❗️УКАЗАТЬ ПРОМОКОД Sawz500❗️</span></p><br>
+                    <p>🟢 <strong>2. Подключить свой аккаунт к боту</strong>, это можно сделать в Профиле.</p><br>
+                    <p>🟢 <strong>3. Запросить сигнал в боте</strong> и ставить по сигналам из бота.</p>
+                </div>
+                <button id="spoiler-btn" class="spoiler-btn" onclick="toggleSpoiler()">РАЗВЕРНУТЬ ⬇️</button>
+            </div>
+            
+            <!-- ЧЕКБОКС 1: Ознакомился с инструкцией -->
+            <div class="checkbox-container disabled" id="instruct-check-container">
+                <input type="checkbox" id="instruct-check" class="custom-checkbox" onchange="checkAgreement()" disabled>
+                <label for="instruct-check" class="checkbox-label">Я ознакомился с инструкцией</label>
+            </div>
+        </div>
+
         <p class="warning-desc">
-            Если аккаунт зарегистрирован не по ссылке ниже или без промокода, <span style="color:var(--pink-1win); font-weight:bold;">,ТО БОТ БУДЕТ ВЫДАВАТЬ ОШИБКИ!</span>
+            Если аккаунт зарегистрирован не по ссылке ниже или без промокода, <span style="color:var(--pink-1win); font-weight:bold;">ТО БОТ БУДЕТ ВЫДАВАТЬ ОШИБКИ!</span>
         </p>
         
         <a href="https://lkhv.cc/94eec9" target="_blank" style="display: block; background: #0f192b; color: white; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 700; border: 1px solid #333; margin-bottom: 10px;">
@@ -347,6 +469,7 @@
             Sawz500
         </div>
 
+        <!-- ЧЕКБОКС 2: Регистрация -->
         <div class="checkbox-container">
             <input type="checkbox" id="reg-check" class="custom-checkbox" onchange="checkAgreement()">
             <label for="reg-check" class="checkbox-label">Я зарегистрировался по ссылке и ввел промокод</label>
@@ -374,7 +497,7 @@
     <div id="screen-start" class="screen active">
         <div style="margin-top: 20px;">
             <div class="guide-box" style="border-left: 4px solid var(--blue-1win);">
-                <div style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">Введите ваш ID</div>
+                <div style="font-size: 14px; font-weight: 800; margin-bottom: 5px;">Введите ваш ID</div>
                 <p style="font-size: 12px; color: var(--text-gray);">
                     Убедитесь, что вы выполнили условия регистрации.
                 </p>
@@ -440,22 +563,40 @@
         </div>
     </div>
 
-    <!-- 6. ИНСТРУКЦИЯ -->
+    <!-- 6. ИНСТРУКЦИЯ (ОБНОВЛЕННАЯ) -->
     <div id="screen-instructions" class="screen">
         <div style="margin-top: 20px;">
+            <!-- Полный текст инструкции, всегда развернут -->
             <div class="guide-box">
-                <p style="font-size: 13px; color: var(--pink-1win); font-weight: bold; text-align: center; margin-bottom: 15px;">
-                    ⚠️ ВАЖНО: Если аккаунт зарегистрирован не по ссылке ниже или без промокода, бот будет выдавать ошибочные прогнозы.
-                </p>
-                <p style="font-size: 13px; color: var(--text-gray); line-height: 1.5;">
+                <div class="instruction-text-style">
+                    <span class="instruction-header">❗️ ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ ❗️</span>
+                    
+                    <p>Бот основан и обучен на кластере нейросети 🖥<br>
+                    Для тренировки бота было сыграно 🎰 10.000+ игр.<br>
+                    В данный момент пользователи бота успешно делают в день 15-25% от своего 💸 капитала!</p><br>
+                    <p>На текущий момент бот по сей день проходит проверки и исправления! Точность бота составляет 92%!</p><br>
+                    <div style="color:var(--blue-1win); font-weight: 800; margin-bottom: 5px;">Для получения максимального профита следуйте инструкции:</div>
+                    <p>🟢 <strong>1. Пройти регистрацию в букмекерской конторе 1WIN</strong><br>
+                    <span style="color:var(--pink-1win)">❗️ОБЯЗАТЕЛЬНО НУЖНО СОЗДАТЬ НОВЫЙ АККАУНТ❗️</span><br>
+                    (Единственная официальная ссылка на сайт 1WIN будет постится в телеграмм канале @temki1win)<br>
+                    Если не открывается - заходим с включенным VPN (Швеция).<br>
+                    Без регистрации доступ к сигналам не будет открыт!<br>
+                    <span style="color:var(--pink-1win)">❗️УКАЗАТЬ ПРОМОКОД Sawz500❗️</span></p><br>
+                    <p>🟢 <strong>2. Подключить свой аккаунт к боту</strong>, это можно сделать в Профиле.</p><br>
+                    <p>🟢 <strong>3. Запросить сигнал в боте</strong> и ставить по сигналам из бота.</p>
+                </div>
+            </div>
+
+            <div class="guide-box">
+                <p style="font-size: 13px; color: var(--text-gray); line-height: 1.5; font-weight: 600; text-align: center;">
                     Официальная ссылка для корректной работы:
                 </p>
-                <a href="https://lkhv.cc/94eec9" target="_blank" style="display: block; background: #0f192b; color: var(--blue-1win); text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-top: 10px; border: 1px solid #333;">
+                <a href="https://lkhv.cc/94eec9" target="_blank" style="display: block; background: #0f192b; color: var(--blue-1win); text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 800; margin-top: 10px; border: 1px solid #333;">
                     https://lkhv.cc/94eec9
                 </a>
             </div>
             <div class="guide-box">
-                <p style="font-size: 13px; color: var(--text-gray);">Промокод:</p>
+                <p style="font-size: 13px; color: var(--text-gray); text-align: center; font-weight: 600;">Промокод:</p>
                 <div class="code-bg">Sawz500</div>
             </div>
         </div>
@@ -1028,10 +1169,41 @@
     }
     
     // --- LOGIC FOR START WARNING ---
+    
+    let isInstructionExpanded = false;
+
+    function toggleSpoiler() {
+        const content = document.getElementById('spoiler-text');
+        const btn = document.getElementById('spoiler-btn');
+        const chkContainer = document.getElementById('instruct-check-container');
+        const chk = document.getElementById('instruct-check');
+
+        content.classList.toggle('expanded');
+        
+        if (content.classList.contains('expanded')) {
+            btn.innerText = 'СВЕРНУТЬ ⬆️';
+            isInstructionExpanded = true;
+            // Активируем чекбокс инструкции
+            chkContainer.classList.remove('disabled');
+            chk.disabled = false;
+        } else {
+            btn.innerText = 'РАЗВЕРНУТЬ ⬇️';
+        }
+        
+        checkAgreement();
+    }
+
     function checkAgreement() {
-        const chk = document.getElementById('reg-check');
+        const regChk = document.getElementById('reg-check');
+        const instructChk = document.getElementById('instruct-check');
         const btn = document.getElementById('btn-start-confirm');
-        if (chk.checked) {
+        
+        // Условие:
+        // 1. Инструкция была развернута хотя бы раз (isInstructionExpanded)
+        // 2. Галочка "Ознакомился с инструкцией" нажата
+        // 3. Галочка "Зарегистрировался" нажата
+        
+        if (regChk.checked && instructChk.checked && isInstructionExpanded) {
             btn.disabled = false;
             btn.classList.remove('btn-start-disabled');
             btn.classList.add('btn-start-active');
@@ -1132,6 +1304,12 @@
         document.getElementById('userIdInput').value = '';
         
         document.getElementById('reg-check').checked = false;
+        document.getElementById('instruct-check').checked = false;
+        document.getElementById('instruct-check').disabled = true;
+        document.getElementById('instruct-check-container').classList.add('disabled');
+        isInstructionExpanded = false;
+        document.getElementById('spoiler-text').classList.remove('expanded');
+        document.getElementById('spoiler-btn').innerText = 'РАЗВЕРНУТЬ ⬇️';
         checkAgreement(); 
         
         showScreen('screen-start');
