@@ -119,12 +119,11 @@
         text-align: left;
     }
     
-    /* Общий класс для текста инструкции (жирный и приятный) */
     .instruction-text-style {
         font-size: 12px;
-        color: #e0e6ed; /* Чуть светлее серого */
-        line-height: 1.6; /* Увеличенный интервал */
-        font-weight: 600; /* Жирнее обычного */
+        color: #e0e6ed;
+        line-height: 1.6;
+        font-weight: 600;
     }
     .instruction-text-style strong {
         color: white;
@@ -142,7 +141,6 @@
         text-align: left;
     }
     
-    /* Заголовок внутри инструкции */
     .instruction-header {
         color: var(--pink-1win);
         font-weight: 900;
@@ -171,7 +169,6 @@
         opacity: 0;
     }
     
-    /* КНОПКА РАЗВЕРНУТЬ - ЖИРНАЯ */
     .spoiler-btn {
         width: 100%;
         background: rgba(255,255,255,0.05);
@@ -331,14 +328,6 @@
     .tower-roof::after { content: ''; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 4px; height: 20px; background: red; border-radius: 2px; }
     .tower-result { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 56px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(0,0,0,0.8); z-index: 20; display: none; }
 
-    /* Lucky Jet */
-    .lucky-wrapper { height: 200px; background: #0b0b15; border-radius: 15px; position: relative; overflow: hidden; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
-    .star-field { position: absolute; width: 100%; height: 200%; top: -100%; left: 0; background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)); background-repeat: repeat; background-size: 200px 200px; animation: flyStars 3s linear infinite; opacity: 0.5; }
-    .jet-container { position: absolute; bottom: 20px; left: 20px; display: flex; align-items: center; transition: all 0.5s linear; z-index: 5; }
-    .joe { font-size: 40px; z-index: 2; transform: rotate(-5deg); }
-    .jet-trail { position: absolute; left: -15px; bottom: 5px; width: 40px; height: 10px; background: linear-gradient(90deg, transparent, #ff5500, #ffcc00); filter: blur(4px); transform-origin: right; animation: trailPulse 0.2s infinite alternate; z-index: 1; border-radius: 50%; }
-    .multiplier { position: absolute; z-index: 10; font-size: 42px; font-weight: 900; color: white; }
-
     /* Penalty & Coin */
     .penalty-wrapper { position: relative; height: 220px; background: linear-gradient(to bottom, #2b5624, #3a7530); border: 3px solid rgba(255,255,255,0.8); border-bottom: none; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
     .net { position: absolute; top: 5px; left: 5px; right: 5px; bottom: 0; border: 1px solid rgba(255,255,255,0.3); border-bottom: none; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 15px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 15px); }
@@ -410,8 +399,6 @@
 
     @keyframes popStar { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     @keyframes dropFloor { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    @keyframes flyStars { 0% { transform: translateY(0); } 100% { transform: translateY(50%); } }
-    @keyframes trailPulse { 0% { transform: scaleX(0.8); opacity: 0.7; } 100% { transform: scaleX(1.2); opacity: 1; } }
     @keyframes ballHit { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 </style>
 </head>
@@ -519,10 +506,6 @@
             <div class="game-card" onclick="openGame('mines')">
                 <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/699e2deb-49eb-4774-949f-7fbbedd55249_vertical.png@avif" alt="Mines">
                 <div class="g-title">MINES</div>
-            </div>
-            <div class="game-card" onclick="openGame('lucky')">
-                <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/2d1cb9c9-9a84-4975-a6b9-f2881406ec9f_vertical.png@avif" alt="Lucky Jet">
-                <div class="g-title">LUCKY JET</div>
             </div>
             <div class="game-card" onclick="openGame('penalty')">
                 <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/v/461c9008-7685-4e45-84d8-bd0fc59161a6_vertical.png@avif" alt="Penalty">
@@ -676,16 +659,6 @@
                     </div>
                 </div>
 
-                <!-- Lucky Jet -->
-                <div class="admin-image-upload">
-                    <div style="font-weight: bold; margin-bottom: 10px; color: white;">🚀 Lucky Jet</div>
-                    <div class="admin-image-controls">
-                        <img id="preview-lucky" class="admin-image-preview" src="" alt="Превью" style="display: none;">
-                        <input type="file" id="upload-lucky" class="admin-file-input" accept="image/png, image/jpeg" onchange="adminUploadImage('lucky', this)">
-                        <button class="main-btn" style="padding: 8px 15px; font-size: 12px;" onclick="adminSaveImage('lucky')">ОБНОВИТЬ</button>
-                    </div>
-                </div>
-
                 <!-- Пенальти -->
                 <div class="admin-image-upload">
                     <div style="font-weight: bold; margin-bottom: 10px; color: white;">⚽ Пенальти</div>
@@ -736,24 +709,6 @@
             <div class="status-text" id="minesStatus">Нажми кнопку для сигнала</div>
             <div class="loader-container" id="loaderMines"><div class="spinner"></div></div>
             <button class="main-btn" id="btnMines" onclick="runMines()">ПОЛУЧИТЬ СИГНАЛ</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()">← В МЕНЮ</div>
-        </div>
-    </div>
-
-    <!-- ИГРА: ЛАКИ ДЖЕТ -->
-    <div id="game-lucky" class="screen">
-        <div class="game-ui">
-            <div class="lucky-wrapper">
-                <div class="star-field"></div>
-                <div class="jet-container" id="jetCont">
-                    <div class="jet-trail"></div>
-                    <div class="joe">🚀</div>
-                </div>
-                <div class="multiplier" id="luckyNum">x1.00</div>
-            </div>
-            <div class="status-text" id="luckyStatus">Ожидание...</div>
-            <div class="loader-container" id="loaderLucky"><div class="spinner"></div></div>
-            <button class="main-btn" id="btnLucky" onclick="runLucky()">ПОЛУЧИТЬ СИГНАЛ</button>
             <div style="text-align: center; margin-top: 15px; font-size: 12px; opacity: 0.5; cursor: pointer;" onclick="goHome()">← В МЕНЮ</div>
         </div>
     </div>
@@ -1115,7 +1070,6 @@
     function getGameName(game) {
         const names = {
             'mines': 'Мины',
-            'lucky': 'Lucky Jet',
             'penalty': 'Пенальти',
             'coin': 'Орел и Решка',
             'tower': 'Tower Rush'
@@ -1124,7 +1078,7 @@
     }
     
     function loadGameImages() {
-        const games = ['mines', 'lucky', 'penalty', 'coin', 'tower'];
+        const games = ['mines', 'penalty', 'coin', 'tower'];
         games.forEach(game => {
             const imageData = localStorage.getItem(`${ADMIN_IMAGES_PREFIX}${game}`);
             if (imageData) {
@@ -1377,30 +1331,6 @@
                 i++;
                 if(i >= spots.length) { clearInterval(reveal); stopLoading('btnMines', 'loaderMines', 'minesStatus'); addSignal(); }
             }, 300);
-        }, getRandomDelay());
-    }
-
-    function runLucky() {
-        startLoading('btnLucky', 'loaderLucky', 'luckyStatus');
-        const jet = document.getElementById('jetCont'); const num = document.getElementById('luckyNum');
-        jet.style.transition = 'none'; jet.style.left = '20px'; jet.style.bottom = '20px';
-        num.innerText = 'x1.00'; num.style.color = 'white';
-        setTimeout(() => {
-            jet.style.transition = 'all 2s ease-out'; jet.style.left = '60%'; jet.style.bottom = '120px';
-            let current = 1.00; let target; const r = Math.random();
-            if(r < 0.6) target = (Math.random() * (1.9 - 1.2) + 1.2).toFixed(2);
-            else if (r < 0.85) target = (Math.random() * (3.5 - 2.0) + 2.0).toFixed(2);
-            else target = (Math.random() * (12.0 - 5.0) + 5.0).toFixed(2);
-            const timer = setInterval(() => {
-                current += 0.03;
-                if(current >= target) {
-                    current = target; clearInterval(timer);
-                    stopLoading('btnLucky', 'loaderLucky', 'luckyStatus');
-                    if(target < 2) num.style.color = '#0099ff'; else if(target < 5) num.style.color = '#f53b7b'; else num.style.color = '#f59e0b';
-                    addSignal();
-                }
-                num.innerText = 'x' + parseFloat(current).toFixed(2);
-            }, 20);
         }, getRandomDelay());
     }
 
