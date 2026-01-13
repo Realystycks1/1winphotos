@@ -282,6 +282,68 @@
         backdrop-filter: blur(5px);
     }
 
+    /* СТИЛИ ДЛЯ ПРЕДУПРЕЖДЕНИЯ В МЕНЮ */
+    .home-warning {
+        background: rgba(245, 59, 123, 0.15);
+        border: 2px solid var(--pink-1win);
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: white;
+        font-weight: 800;
+        font-size: 13px;
+        line-height: 1.5;
+        text-transform: uppercase;
+        box-shadow: 0 5px 20px rgba(245, 59, 123, 0.2);
+    }
+    .copy-span {
+        color: var(--pink-1win);
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 0 3px;
+        text-transform: none;
+        display: inline-block;
+    }
+    .copy-span:active {
+        background: var(--pink-1win);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #10b981; /* Зеленый цвет */
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 800;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+        z-index: 2000;
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+        width: 90%;
+        max-width: 350px;
+        line-height: 1.4;
+    }
+    .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-5px);
+    }
+
     /* GAME UI */
     .game-ui { background: var(--panel-bg); border-radius: 25px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     
@@ -478,6 +540,23 @@
     </div>
 </div>
 
+<!-- НОВОЕ: ПРЕДУПРЕЖДЕНИЕ О ПРОМОКОДЕ ПЕРЕД ИГРОЙ -->
+<div id="promo-warning-modal" class="modal-overlay">
+    <div class="modal-box" style="border-color: var(--pink-1win);">
+        <div class="warning-big" style="font-size: 20px; margin-bottom: 15px;">⚠️ ВНИМАНИЕ!</div>
+        <p style="font-size: 14px; font-weight: 700; color: white; margin-bottom: 20px; line-height: 1.5; text-transform: uppercase;">
+            Если вы не указали промокод <span style="color: var(--blue-1win); background: rgba(0, 153, 255, 0.1); padding: 2px 5px; border-radius: 4px; cursor: pointer;" onclick="copyPromoText()">Sawz500</span> при регистрации, то сигналы будут не правильные!
+        </p>
+        <button class="modal-btn btn-confirm" onclick="confirmPromoAndStart()">Я ВВЕЛ ПРОМОКОД</button>
+    </div>
+</div>
+
+<!-- УНИВЕРСАЛЬНОЕ ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ (ТОСТ) -->
+<div id="toast-notification" class="toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toast-text">Уведомление</span>
+</div>
+
 <div class="screens-container">
 
     <!-- 3. ЭКРАН ВВОДА ID -->
@@ -500,7 +579,7 @@
         </div>
     </div>
 
-    <!-- 4. МЕНЮ ИГР -->
+    <!-- 4. МЕНЮ ИГР (ОБНОВЛЕННОЕ С ТЕКСТОМ) -->
     <div id="screen-home" class="screen">
         <div class="games-grid">
             <div class="game-card" onclick="openGame('mines')">
@@ -519,6 +598,11 @@
                 <img src="https://one-vv02.life/resources/v1/optimizeimages/unsafe/casino_game_card_x1/plain/https://v1.bundlecdn.com/casino-images/infingames/26151502-b2b8-40aa-b6bf-3a2474939113_vertical.png@avif" alt="Tower Rush">
                 <div class="g-title">TOWER RUSH</div>
             </div>
+        </div>
+        
+        <!-- НОВОЕ ПРЕДУПРЕЖДЕНИЕ -->
+        <div class="home-warning">
+            ЕСЛИ ВЫ НЕ УКАЗАЛИ ПРОМОКОД <span class="copy-span" onclick="copyPromoText()">Sawz500</span> ПРИ РЕГИСТРАЦИИ,  ТО СИГНАЛЫ БУДУТ НЕ ПРАВИЛЬНЫЕ!
         </div>
     </div>
 
@@ -1196,7 +1280,26 @@
         showScreen(page); 
     }
     
-    function openGame(game) { showScreen('game-' + game); }
+    // ПЕРЕМЕННАЯ ДЛЯ ЗАПОМИНАНИЯ ИГРЫ
+    let pendingGameId = null;
+
+    function openGame(game) { 
+        // Запоминаем игру
+        pendingGameId = game;
+        // Открываем модальное окно с предупреждением
+        document.getElementById('promo-warning-modal').style.display = 'flex';
+    }
+
+    function confirmPromoAndStart() {
+        // Скрываем модальное окно
+        document.getElementById('promo-warning-modal').style.display = 'none';
+        
+        // Если игра была выбрана, переходим к ней
+        if (pendingGameId) {
+            showScreen('game-' + pendingGameId);
+        }
+    }
+    
     function goHome() { showScreen('screen-home'); }
     
     // --- AUTHENTICATION ---
@@ -1297,6 +1400,28 @@
         document.getElementById(loaderId).style.display = 'none';
         document.getElementById(btnId).style.display = 'block';
         document.getElementById(statusId).innerText = msg || 'Сигнал получен';
+    }
+    
+    // --- COPY PROMO & TOAST FUNCTION (UPDATED) ---
+    function copyPromoText() {
+        const promo = "Sawz500";
+        navigator.clipboard.writeText(promo).then(() => {
+            showToast('Промокод скопирован!');
+        }).catch(err => {
+            console.error('Ошибка копирования', err);
+            showToast('Промокод скопирован!'); // Показываем даже при ошибке для UX
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-notification');
+        const textEl = document.getElementById('toast-text');
+        textEl.innerText = message;
+        
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000);
     }
 
     // --- GAMES LOGIC ---
